@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --emerald: #0c3c23;
+  --pine: #00311F;
+  --lime: #AFE607;
+  --ivory: #FAFFF2;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-pine text-ivory antialiased;
+    font-family: var(--font-inter), Inter, system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-bricolage), Inter, system-ui, sans-serif;
+  }
+
+  ::selection {
+    background: rgba(175, 230, 7, 0.35);
+    color: #FAFFF2;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #00311F;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #AFE607;
+    border-radius: 999px;
+  }
+}
+
+@layer components {
+  .premium-shell {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8;
+  }
+
+  .glass-card {
+    @apply border border-white/10 bg-white/[0.055] shadow-2xl backdrop-blur-2xl;
+  }
+
+  .lime-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-lime-glow/30 bg-lime-glow/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-lime-glow;
+  }
+
+  .section-space {
+    @apply py-20 sm:py-24 lg:py-32;
+  }
+
+  .fancy-grid {
+    background-image:
+      linear-gradient(rgba(250, 255, 242, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(250, 255, 242, 0.045) 1px, transparent 1px);
+    background-size: 74px 74px;
+  }
+
+  .noise:before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+    opacity: 0.055;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .mask-fade {
+    mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+  }
+}
