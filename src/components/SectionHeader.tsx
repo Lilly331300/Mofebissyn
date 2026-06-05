@@ -28,20 +28,29 @@ export function SectionHeader({
       className={align === "center" ? "mx-auto max-w-5xl text-center" : "max-w-5xl"}
     >
       <div
-        className={`mx-auto flex w-fit items-center gap-3 rounded-full border px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] sm:text-xs ${
-          align === "left" ? "mx-0" : ""
-        } ${
-          isLight
-            ? "border-pine/15 bg-pine/5 text-emerald"
-            : "border-lime-glow/25 bg-lime-glow/10 text-lime-glow"
+        className={`flex w-fit items-center gap-3 ${
+          align === "center" ? "mx-auto justify-center" : ""
         }`}
       >
         <span
-          className={`h-2 w-2 rounded-full ${
-            isLight ? "bg-emerald" : "bg-lime-glow"
+          className={`h-px w-10 ${
+            isLight ? "bg-emerald/45" : "bg-lime-glow/55"
           }`}
         />
-        {eyebrow}
+
+        <p
+          className={`font-heading text-sm font-black uppercase tracking-[0.34em] sm:text-base ${
+            isLight ? "text-emerald" : "text-lime-glow"
+          }`}
+        >
+          {eyebrow}
+        </p>
+
+        <span
+          className={`h-px w-10 ${
+            isLight ? "bg-emerald/45" : "bg-lime-glow/55"
+          }`}
+        />
       </div>
 
       <h2

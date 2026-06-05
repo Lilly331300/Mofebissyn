@@ -70,7 +70,7 @@ export function ServicesSection() {
         <SectionHeader
           eyebrow="Core services"
           title="Support for every major step of your journey."
-          description="After the survey, users will understand the full range of services Mofebissyn is preparing to offer."
+          description="From admission and visa guidance to transcripts, test preparation, travel support, and digital tracking — Mofebissyn is designed to support the full pathway."
         />
 
         <div className="mt-14 grid gap-7 md:grid-cols-2 lg:grid-cols-3">

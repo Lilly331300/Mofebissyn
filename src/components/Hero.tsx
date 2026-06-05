@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Globe2, Sparkles } from "lucide-react";
+import { ArrowRight, Globe2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function Hero() {
@@ -22,10 +22,15 @@ export function Hero() {
           transition={{ duration: 0.85 }}
           className="pt-8 sm:pt-0"
         >
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-lime-glow/25 bg-lime-glow/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-lime-glow sm:text-xs">
-            <Sparkles className="h-4 w-4" />
-            Coming soon
-          </span>
+          <div className="flex w-fit items-center gap-3">
+            <span className="h-px w-10 bg-lime-glow/55" />
+
+            <p className="font-heading text-sm font-black uppercase tracking-[0.34em] text-lime-glow sm:text-base">
+              Coming soon
+            </p>
+
+            <span className="h-px w-10 bg-lime-glow/55" />
+          </div>
 
           <h1 className="mt-7 max-w-5xl font-heading text-5xl font-black leading-[0.88] tracking-[-0.075em] text-ivory sm:text-6xl md:text-7xl lg:text-8xl">
             Your Global Journey Starts Here
@@ -86,7 +91,9 @@ export function Hero() {
                 </div>
 
                 <div>
-                  <p className="text-sm font-bold text-ivory/60">Global pathway</p>
+                  <p className="text-sm font-bold text-ivory/60">
+                    Global pathway
+                  </p>
                   <p className="font-heading text-xl font-black sm:text-2xl">
                     Study. Train. Travel.
                   </p>
