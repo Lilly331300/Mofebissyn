@@ -16,14 +16,25 @@ const initialForm = {
   fullName: "",
   email: "",
   phone: "",
+  interest: "",
+  interestOther: "",
   location: "",
-  userType: "",
-  serviceNeeded: "",
-  preferredRegion: "",
-  biggestChallenge: "",
-  wantsOnlinePlatform: "",
-  timeline: "",
-  message: "",
+  locationOther: "",
+  currentStage: "",
+  triedAdmissionOrVisa: "",
+  stressfulPart: "",
+  stressfulPartOther: "",
+  transcriptDifficulty: "",
+  transcriptFeature: "",
+  visaChallenge: "",
+  testSupport: "",
+  accessPreference: "",
+  platformTurnOff: "",
+  desiredFeatures: [] as string[],
+  convenienceFee: "",
+  processTimeline: "",
+  updatePreference: "",
+  bonusAnswer: "",
 };
 
 type FormState = typeof initialForm;
@@ -39,6 +50,7 @@ function Input({
   value,
   onChange,
   placeholder,
+  required = true,
   type = "text",
 }: {
   label: string;
@@ -46,14 +58,14 @@ function Input({
   value: string;
   onChange: (name: keyof FormState, value: string) => void;
   placeholder: string;
+  required?: boolean;
   type?: string;
 }) {
   return (
     <label className="block">
       <span className={labelClass}>{label}</span>
-
       <input
-        required
+        required={required}
         type={type}
         value={value}
         onChange={(event) => onChange(name, event.target.value)}
@@ -70,19 +82,21 @@ function Select({
   value,
   onChange,
   options,
+  required = true,
 }: {
   label: string;
   name: keyof FormState;
   value: string;
   onChange: (name: keyof FormState, value: string) => void;
   options: string[];
+  required?: boolean;
 }) {
   return (
     <label className="block">
       <span className={labelClass}>{label}</span>
 
       <select
-        required
+        required={required}
         value={value}
         onChange={(event) => onChange(name, event.target.value)}
         className={fieldClass}
@@ -101,14 +115,65 @@ function Select({
   );
 }
 
+function CheckboxGroup({
+  label,
+  values,
+  selected,
+  onToggle,
+}: {
+  label: string;
+  values: string[];
+  selected: string[];
+  onToggle: (value: string) => void;
+}) {
+  return (
+    <div>
+      <p className={labelClass}>{label}</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {values.map((value) => {
+          const checked = selected.includes(value);
+
+          return (
+            <button
+              type="button"
+              key={value}
+              onClick={() => onToggle(value)}
+              className={`rounded-2xl border px-4 py-3 text-left text-sm font-bold transition ${
+                checked
+                  ? "border-lime-glow bg-lime-glow/15 text-lime-glow"
+                  : "border-white/10 bg-white/[0.06] text-ivory/70 hover:border-lime-glow/40"
+              }`}
+            >
+              {value}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function SurveyForm() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
   function update(name: keyof FormState, value: string) {
     setForm((previous) => ({ ...previous, [name]: value }));
+  }
+
+  function toggleFeature(value: string) {
+    setForm((previous) => {
+      const exists = previous.desiredFeatures.includes(value);
+
+      return {
+        ...previous,
+        desiredFeatures: exists
+          ? previous.desiredFeatures.filter((item) => item !== value)
+          : [...previous.desiredFeatures, value],
+      };
+    });
   }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -116,7 +181,7 @@ export function SurveyForm() {
 
     setLoading(true);
     setError("");
-    setSuccess(false);
+    setSuccess("");
 
     try {
       const response = await fetch("/api/survey", {
@@ -124,24 +189,24 @@ export function SurveyForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...form,
-          launchTicketStatus: "Eligible for Mofebissyn launch ticket",
-          launchTicketBenefit:
-            "May qualify for discounts on selected services when the project launches",
-        }),
+        body: JSON.stringify(form),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not submit response");
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.message || "Could not submit response");
       }
 
-      setSuccess(true);
+      setSuccess(
+        "Thank you. Your response has been saved and your Mofebissyn launch ticket eligibility has been recorded."
+      );
+
       setForm(initialForm);
     } catch (err) {
       console.error(err);
       setError(
-        "Your response could not be saved yet. Please try again in a moment."
+        "Your response could not be saved yet. Please check your connection and try again."
       );
     } finally {
       setLoading(false);
@@ -160,9 +225,9 @@ export function SurveyForm() {
 
       <div className="premium-shell relative">
         <SectionHeader
-          eyebrow="Early access survey"
-          title="Fill the survey and secure your launch ticket."
-          description="Mofebissyn is still in development. Share your expectations now and receive an early-access ticket when the project launches. This ticket may qualify you for discounts on selected Mofebissyn services."
+          eyebrow="User experience questionnaire"
+          title="Help us build a platform that truly works for you."
+          description="Your honest feedback will help Mofebissyn design a faster, friendlier, and more trusted online platform for education, travel, visa, transcript, and training support."
         />
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
@@ -181,7 +246,7 @@ export function SurveyForm() {
             </h3>
 
             <p className="mt-4 leading-8 text-ivory/78">
-              Everyone who completes this survey will be considered for a
+              Everyone who completes this questionnaire will be considered for a
               Mofebissyn early-access ticket when the project launches. The
               ticket may serve as a discount pass for selected services.
             </p>
@@ -196,10 +261,11 @@ export function SurveyForm() {
                   <p className="font-heading text-xl font-black text-ivory">
                     Possible ticket benefits
                   </p>
+
                   <p className="mt-2 text-sm leading-7 text-ivory/68">
                     Discounts may apply to selected future services such as
                     consultation, document review, admission guidance, test prep,
-                    or travel advisory.
+                    transcript support, or travel advisory.
                   </p>
                 </div>
               </div>
@@ -217,7 +283,6 @@ export function SurveyForm() {
                   className="flex items-center gap-3 rounded-2xl bg-white/[0.07] p-4"
                 >
                   <ShieldCheck className="h-5 w-5 shrink-0 text-lime-glow" />
-
                   <span className="text-sm font-bold text-ivory/80">
                     {item}
                   </span>
@@ -245,9 +310,9 @@ export function SurveyForm() {
                   </h3>
 
                   <p className="mt-2 text-sm leading-7 text-ivory/68">
-                    Your ticket may be used later as proof of early interest and
-                    may unlock discounts for selected Mofebissyn services when
-                    the project officially launches.
+                    Your response will be saved securely in the project
+                    spreadsheet and used to shape the first version of the
+                    Mofebissyn platform.
                   </p>
                 </div>
               </div>
@@ -279,120 +344,245 @@ export function SurveyForm() {
                 placeholder="+234..."
               />
 
-              <Input
-                label="Location / City"
+              <Select
+                label="1. Which of the following best describes what you’re currently interested in?"
+                name="interest"
+                value={form.interest}
+                onChange={update}
+                options={[
+                  "Studying abroad",
+                  "Applying for a visa",
+                  "Getting my academic transcript or evaluation",
+                  "Preparing or registering for a standardized test",
+                  "Others",
+                ]}
+              />
+
+              {form.interest === "Others" ? (
+                <Input
+                  label="Please specify your interest"
+                  name="interestOther"
+                  value={form.interestOther}
+                  onChange={update}
+                  placeholder="Type your interest"
+                />
+              ) : null}
+
+              <Select
+                label="2. Where are you currently based?"
                 name="location"
                 value={form.location}
                 onChange={update}
-                placeholder="Ibadan, Lagos, Akure..."
+                options={["Lagos", "Ibadan", "Abuja", "Other"]}
               />
 
+              {form.location === "Other" ? (
+                <Input
+                  label="Please specify your location"
+                  name="locationOther"
+                  value={form.locationOther}
+                  onChange={update}
+                  placeholder="Your city/state"
+                />
+              ) : null}
+
               <Select
-                label="User Type"
-                name="userType"
-                value={form.userType}
+                label="3. What stage are you in right now?"
+                name="currentStage"
+                value={form.currentStage}
                 onChange={update}
                 options={[
-                  "Student",
-                  "Parent/Guardian",
-                  "Working Professional",
-                  "Tourist/Traveler",
-                  "Institution Representative",
-                  "Other",
+                  "Just exploring my options",
+                  "Ready to start my application",
+                  "Already applied but need help completing it",
+                  "Currently studying or working abroad",
                 ]}
               />
 
               <Select
-                label="Service you need most"
-                name="serviceNeeded"
-                value={form.serviceNeeded}
+                label="4. Have you ever tried to process your international admission or visa before?"
+                name="triedAdmissionOrVisa"
+                value={form.triedAdmissionOrVisa}
                 onChange={update}
                 options={[
-                  "Study Abroad Admission",
-                  "Visa Consultation",
-                  "Transcript Retrieval",
-                  "Test Preparation",
-                  "Travel/Tourism Support",
-                  "Scholarship Guidance",
-                  "Not sure yet",
+                  "Yes, successfully",
+                  "Yes, but it was difficult",
+                  "No, not yet",
                 ]}
               />
 
               <Select
-                label="Preferred country / region"
-                name="preferredRegion"
-                value={form.preferredRegion}
+                label="5. What was the most stressful or frustrating part?"
+                name="stressfulPart"
+                value={form.stressfulPart}
                 onChange={update}
                 options={[
-                  "UK",
-                  "Canada",
-                  "USA",
-                  "Europe",
-                  "Asia",
-                  "Australia",
-                  "Africa",
-                  "Not sure yet",
+                  "Finding the right school or program",
+                  "Too much paperwork and document requests",
+                  "Delays or unresponsive agents",
+                  "Lack of clear information",
+                  "Cost or payment challenges",
+                  "Others",
+                ]}
+              />
+
+              {form.stressfulPart === "Others" ? (
+                <Input
+                  label="Please describe briefly"
+                  name="stressfulPartOther"
+                  value={form.stressfulPartOther}
+                  onChange={update}
+                  placeholder="Describe the issue"
+                />
+              ) : null}
+
+              <Select
+                label="6. How easy or difficult has it been to get your transcript or academic documents?"
+                name="transcriptDifficulty"
+                value={form.transcriptDifficulty}
+                onChange={update}
+                options={[
+                  "Very easy",
+                  "Somewhat easy",
+                  "Difficult",
+                  "Extremely difficult",
                 ]}
               />
 
               <Select
-                label="Biggest challenge"
-                name="biggestChallenge"
-                value={form.biggestChallenge}
+                label="7. If we could simplify transcript retrieval online, what feature would matter most?"
+                name="transcriptFeature"
+                value={form.transcriptFeature}
                 onChange={update}
                 options={[
-                  "Lack of trusted guidance",
-                  "Visa/document issues",
-                  "High cost",
-                  "Choosing the right school/program",
-                  "Transcript processing",
-                  "Exam preparation",
-                  "Fear of scams",
-                  "Other",
+                  "Fast turnaround time",
+                  "Regular progress updates",
+                  "Secure document delivery",
+                  "Affordability",
+                  "Support and communication",
                 ]}
               />
 
               <Select
-                label="Do you want an online platform?"
-                name="wantsOnlinePlatform"
-                value={form.wantsOnlinePlatform}
+                label="8. When applying for a visa, what do you usually struggle with?"
+                name="visaChallenge"
+                value={form.visaChallenge}
                 onChange={update}
-                options={["Yes", "No", "Maybe"]}
+                options={[
+                  "Understanding the requirements",
+                  "Filling out the forms",
+                  "Scheduling appointments",
+                  "Gathering the right documents",
+                  "Paying fees or accessing verified information",
+                ]}
               />
 
               <Select
-                label="How soon are you planning?"
-                name="timeline"
-                value={form.timeline}
+                label="9. For tests like IELTS, TOEFL, GRE, etc., what support do you need most?"
+                name="testSupport"
+                value={form.testSupport}
                 onChange={update}
                 options={[
-                  "Immediately",
-                  "Within 3 months",
-                  "Within 6 months",
-                  "Within 1 year",
-                  "Just researching for now",
+                  "Registration guidance",
+                  "Training classes",
+                  "Study materials and mock tests",
+                  "Exam reminders or scheduling help",
+                ]}
+              />
+
+              <Select
+                label="10. How would you prefer to access our services?"
+                name="accessPreference"
+                value={form.accessPreference}
+                onChange={update}
+                options={[
+                  "Through a mobile app",
+                  "Website",
+                  "WhatsApp or social media chat",
+                  "Physical office visit",
+                ]}
+              />
+
+              <Select
+                label="11. What usually turns you off when using online education or visa platforms?"
+                name="platformTurnOff"
+                value={form.platformTurnOff}
+                onChange={update}
+                options={[
+                  "Complicated forms",
+                  "Too many steps or unclear instructions",
+                  "Hidden fees",
+                  "Poor communication or slow response",
+                  "Lack of trust or transparency",
+                ]}
+              />
+
+              <Select
+                label="13. Would you pay a small convenience fee for faster or fully digital service?"
+                name="convenienceFee"
+                value={form.convenienceFee}
+                onChange={update}
+                options={["Yes", "Maybe, depending on cost", "No"]}
+              />
+
+              <Select
+                label="14. How soon would you like to complete your process?"
+                name="processTimeline"
+                value={form.processTimeline}
+                onChange={update}
+                options={[
+                  "Within 2 weeks",
+                  "1 month",
+                  "2–3 months",
+                  "No fixed timeline",
+                ]}
+              />
+
+              <Select
+                label="15. How would you like to be updated during your process?"
+                name="updatePreference"
+                value={form.updatePreference}
+                onChange={update}
+                options={[
+                  "Email",
+                  "WhatsApp messages",
+                  "SMS",
+                  "Dashboard notifications",
                 ]}
               />
             </div>
 
-            <label className="mt-5 block">
+            <div className="mt-6">
+              <CheckboxGroup
+                label="12. What features would make you love using a platform like Mofebissyn? You can select more than one."
+                values={[
+                  "Real-time tracking of my application",
+                  "Live chat or counselor support",
+                  "Price transparency and cost breakdown",
+                  "Verified school listings and visa info",
+                  "Easy document upload and download",
+                ]}
+                selected={form.desiredFeatures}
+                onToggle={toggleFeature}
+              />
+            </div>
+
+            <label className="mt-6 block">
               <span className={labelClass}>
-                Tell us what you would love Mofebissyn to help you with
+                Bonus: In one sentence, if you could design the perfect education/travel support platform, what would it do for you?
               </span>
 
               <textarea
                 className={`${fieldClass} min-h-36 resize-none`}
-                value={form.message}
-                onChange={(event) => update("message", event.target.value)}
-                placeholder="Write your expectations here..."
+                value={form.bonusAnswer}
+                onChange={(event) => update("bonusAnswer", event.target.value)}
+                placeholder="Write your answer here..."
               />
             </label>
 
             {success ? (
               <div className="mt-5 rounded-2xl border border-lime-glow/30 bg-lime-glow/10 p-4 text-sm font-bold text-lime-glow">
-                Thank you. Your response has been received. Your early-access
-                launch ticket eligibility has been recorded. Mofebissyn will keep
-                you updated before launch.
+                {success}
               </div>
             ) : null}
 

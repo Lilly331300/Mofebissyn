@@ -10,10 +10,20 @@ export function Hero() {
       id="home"
       className="fancy-grid relative min-h-screen overflow-hidden bg-brand-radial pt-28 sm:pt-32"
     >
-      <div className="absolute inset-0 bg-[url('/images/hero-global-consultation.jpg')] bg-cover bg-center opacity-[0.24]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-pine/75 via-pine/88 to-pine" />
+      <div className="absolute inset-0 bg-[url('/images/hero-flags-bg.jpg')] bg-cover bg-center opacity-[0.22]" />
+      <div className="absolute inset-0 bg-[url('/images/hero-global-consultation.jpg')] bg-cover bg-center opacity-[0.16]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-pine/78 via-pine/90 to-pine" />
+      <div className="absolute inset-0 bg-gradient-to-r from-pine via-pine/82 to-pine/45" />
+
       <div className="absolute left-1/2 top-24 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-lime-glow/20 blur-[120px]" />
       <div className="absolute -right-28 top-24 hidden h-[34rem] w-[34rem] rounded-full border border-lime-glow/20 lg:block" />
+      <div className="absolute -left-28 bottom-20 hidden h-[28rem] w-[28rem] rounded-full border border-white/10 lg:block" />
+
+      <motion.div
+        animate={{ y: [0, -18, 0], opacity: [0.18, 0.28, 0.18] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute right-10 top-36 hidden h-32 w-32 rounded-full bg-lime-glow/20 blur-3xl lg:block"
+      />
 
       <div className="premium-shell relative grid min-h-[calc(100vh-7rem)] items-center gap-12 pb-16 lg:grid-cols-[1.05fr_.95fr]">
         <motion.div
@@ -24,11 +34,9 @@ export function Hero() {
         >
           <div className="flex w-fit items-center gap-3">
             <span className="h-px w-10 bg-lime-glow/55" />
-
             <p className="font-heading text-sm font-black uppercase tracking-[0.34em] text-lime-glow sm:text-base">
               Coming soon
             </p>
-
             <span className="h-px w-10 bg-lime-glow/55" />
           </div>
 
