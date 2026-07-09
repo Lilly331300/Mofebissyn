@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { AboutSection } from "@/components/AboutSection";
+import { ProjectVideo } from "@/components/ProjectVideo";
 import { ServicesSection } from "@/components/ServicesSection";
 import { HowItWorks } from "@/components/HowItWorks";
 import { SurveyForm } from "@/components/SurveyForm";
@@ -13,6 +14,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <AboutSection />
+      <ProjectVideo />
       <ServicesSection />
       <HowItWorks />
       <SurveyForm />

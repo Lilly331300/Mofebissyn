@@ -9,6 +9,7 @@ import { useScrollPosition } from "@/hooks/useScrollPosition";
 const navItems = [
   { label: "Home", href: "#home" },
   { label: "Overview", href: "#about" },
+    { label: "Video", href: "#project-video" },
   { label: "Services", href: "#services" },
   { label: "How It Works", href: "#pathway" },
   { label: "Survey", href: "#survey" },
